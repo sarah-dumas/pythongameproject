@@ -1,0 +1,613 @@
+#!/usr/bin/env python
+
+
+import os, pygame, sys, random
+import random
+from pygame.locals import *
+
+
+#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the timers that control the animation
+        self.counter = 0
+        self.fast_counter = 0
+
+        #this tells the animator how fast the sprite is moving
+        self.fast = 0
+
+    def update(self):
+        """animate the sprite based on its speed"""
+        if self.fast == 0:
+            self.counter += 1
+            if self.counter == 20:
+                self.image = self.moving3
+                self.normal.play()
+            if self.counter == 30:
+                self.image = self.movingnorm
+            if self.counter == 40:
+                self.image = self.moving1
+                self.normal.play()
+            if self.counter == 50:
+                self.image = self.movingnorm
+                self.counter = 0
+        if self.fast == 1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingfast1
+                self.speed.play()
+            if self.fast_counter == 20:
+                self.image = self.movingnorm
+            if self.fast_counter == 30:
+                self.image = self.movingfast2
+            if self.fast_counter == 40:
+                self.image = self.movingnorm
+                self.fast_counter = 0
+        if self.fast == -1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingslow
+                self.sl#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the timers that control the animation
+        self.counter = 0
+        self.fast_counter = 0
+
+        #this tells the animator how fast the sprite is moving
+        self.fast = 0
+
+    def update(self):
+        """animate the sprite based on its speed"""
+        if self.fast == 0:
+            self.counter += 1
+            if self.counter == 20:
+                self.image = self.moving3
+                self.normal.play()
+            if self.counter == 30:
+                self.imag#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the timers that control the animation
+        self.counter = 0
+        self.fast_counter = 0
+
+        #this tells the animator how fast the sprite is moving
+        self.fast = 0
+
+    def update(self):
+        """animate the sprite based on its speed"""
+        if self.fast == 0:
+            self.counter += 1
+            if self.counter == 20:
+                self.image = self.moving3
+                self.normal.play()
+            if self.counter == 30:
+                self.image = self.movingnorm
+            if self.counter == 40:
+                self.image = self.moving1
+                self.normal.play()
+            if self.counter == 50:
+                self.image = self.movingnorm
+                self.counter = 0
+        if self.fast == 1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingfast1
+                self.speed.play()
+            if self.fast_counter == 20:
+                self.image = self.movingnorm
+            if self.fast_counter == 30:
+                self.image = self.movingfast2
+            if self.fast_counter == 40:
+                self.image = self.movingnorm
+                self.fast_counter = 0
+        if self.fast == -1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingslow
+                self.sl#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the tie = self.movingnorm
+            if self.counter == 40:
+                self.image = self.moving1
+                self.normal.play()
+            if self.counter == 50:
+                self.image = self.movingnorm
+                self.counter = 0
+        if self.fast == 1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingfast1
+                self.speed.play()
+            if self.fast_counter == 20:
+                self.image = self.movingnorm
+            if self.fast_counter == 30:
+                self.image = self.movingfast2
+            if self.fasow.play()
+            if self.fast_counter == 30:
+                self.image = self.movingnorm
+                self.fast_counter = 0
+
+
+class Trail(pygame.sprite.Sprite):
+    """this is the class for the trail that follows the unit"""
+    def __init__(self, startpos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image('path.png', None)
+        self.rect.centerx = startpos[0]
+        self.rect.centery = startpos[1] + 25
+
+    def update(self):
+        """this forces the trail to move down at the same speed as the background
+           giving the illusion that the eskimo is moving"""
+        self.rect.move_ip((0,2))
+        #this kills the sprite if it goes too low
+        if self.rect.centery > 650:
+            self.kill()   
+
+class PolarBear(pygame.sprite.Sprite):
+    """class for the enemy Polar Bear"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image('polar_bear.gif', -1)
+        self.rect.centerx = 100
+        self.rect.centery = 560
+        self.counter = 0
+    
+    def update(self, speed, gox, goy):
+        """this moves the polar bear based on the position of the eskimo and trees
+           causing it to follow you but go around trees.
+           The extra information must be supplied when you tell this sprite to update."""
+        self.counter += 1
+
+        #'global' means this information is available to any class or function that might need it
+        #and not limited to one class or function
+        
+        #this calls the class hero which is later defined, used to check eskimos position
+        global hero
+        
+        if self.counter #functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the timers that control the animation
+        self.counter = 0
+        self.fast_counter = 0
+
+        #this tells the animator how fast the sprite is moving
+        self.fast = 0
+
+    def update(self):
+        """animate the sprite based on its speed"""
+        if self.fast == 0:
+            self.counter += 1
+            if self.counter == 20:
+                self.image = self.moving3
+                self.normal.play()
+            if self.counter == 30:
+                self.image = self.movingnorm
+            if self.counter == 40:
+                self.image = self.moving1
+                self.normal.play()
+            if self.counter == 50:
+                self.image = self.movingnorm
+                self.counter = 0
+        if self.fast == 1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingfast1
+                self.speed.play()
+            if self.fast_counter == 20:
+                self.image = self.movingnorm
+            if self.fast_counter == 30:
+                self.image = self.movingfast2
+            if self.fast_counter == 40:
+                self.image = self.movingnorm
+                self.fast_counter = 0
+        if self.fast == -1:
+            self.fast_counter += 1
+            if self.fast_counter == 10:
+                self.image = self.movingslow
+                self.sl#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+        #these are the timers that control the animation
+        self.counter = 0
+        self.fast_counter = 0
+
+        #this tells the animator how fast the sprite is moving
+        self.fast = 0
+
+    def update(self):
+        """animate the sprite based on its speed"""
+        if self.fast == 0:
+            self.counter += 1
+            if self.counter == 20:
+                self.image = self.moving3
+                self.normal.play()
+            if self.counter == 30:
+                self.imag#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    image = image.convert_alpha()
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0,0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
+
+def load_sound(name):
+    """loads a sound file (.wav) in memory"""
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer or not pygame.mixer.get_init():
+        return NoneSound()
+    fullname = os.path.join('data', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error, message:
+        print 'Cannot load sound:', fullname
+        raise SystemExit, message
+    return sound
+
+#classes(sprites) for our game objects
+class Eskimo(pygame.sprite.Sprite):
+    """this is the class for our hero unit"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        #this is the base image
+        self.image, self.rect = load_image('eskimo1.png', -1)
+
+        #this is the sprites starting point on the screen
+        self.rect.centerx = 100
+        self.rect.centery = 350
+
+        #this group of data is used to animate the sprite
+        self.moving1 = pygame.image.load(os.path.join('data','eskimo1.png'))
+        self.movingnorm = pygame.image.load(os.path.join('data','eskimo2.png'))
+        self.moving3 = pygame.image.load(os.path.join('data','eskimo3.png'))
+        self.movingfast1 = pygame.image.load(os.path.join('data','eskimofast1.png'))
+        self.movingfast2 = pygame.image.load(os.path.join('data','eskimofast2.png'))
+        self.movingslow = pygame.image.load(os.path.join('data','eskimoslow.png'))
+
+        #sounds for the players movements
+        #can only be a .wav file
+        self.speed = load_sound('whoosh.wav')
+        self.slow = load_sound('slow.wav')
+        self.normal = load_sound('norm-walk.wav')
+
+#functions used to load sounds and images
+def load_image(name, colorkey=None):
+    """loads an image into memory"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+

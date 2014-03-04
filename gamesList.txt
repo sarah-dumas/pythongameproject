@@ -1,0 +1,7 @@
+eskimo
+frogger
+options
+pacman
+quittodesktop
+screensaver
+tetris
